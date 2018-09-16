@@ -11,6 +11,9 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.ratings
+    @selected_ratings = params[:ratings]
+    puts "Valitut: #{@selected_ratings}"
     @sort_column = params[:sort_column]
     if @sort_column == 'title'
       @title_class = 'hilite'
@@ -19,7 +22,9 @@ class MoviesController < ApplicationController
       @title_class = ''
       @release_date_class = 'hilite'
     end
-    @movies = Movie.order(@sort_column).all
+    
+    @movies = Movie.order(@sort_column).where("rating IN (?)", @selected_ratings != nil ? @selected_ratings.keys : @all_ratings)
+    
   end
 
   def new
